@@ -1,0 +1,473 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Boosting AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#000;
+  font-family:'Inter',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  color:white;
+}
+
+/* CHAT BOX */
+
+#chat-box{
+  width:420px;
+  height:720px;
+  background:#0b0b0b;
+  border:1px solid #1f1f1f;
+  border-radius:24px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+
+  box-shadow:
+    0 0 40px rgba(255,255,255,0.04),
+    0 0 120px rgba(255,255,255,0.03);
+}
+
+/* HEADER */
+
+#chat-header{
+  height:90px;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  border-bottom:1px solid #1a1a1a;
+  background:#050505;
+}
+
+/* LOGO */
+
+.logo{
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  border:1px solid #1f1f1f;
+  flex-shrink:0;
+}
+
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* HEADER TEXT */
+
+.header-text h1{
+  font-size:18px;
+  font-weight:600;
+}
+
+.header-text p{
+  font-size:12px;
+  color:#777;
+  margin-top:4px;
+}
+
+/* MESSAGES */
+
+#chat-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  scroll-behavior:smooth;
+}
+
+#chat-messages::-webkit-scrollbar{
+  width:4px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb{
+  background:#222;
+  border-radius:10px;
+}
+
+/* MESSAGE */
+
+.msg{
+  display:flex;
+  animation:fadeIn 0.25s ease;
+}
+
+.msg.user{
+  justify-content:flex-end;
+}
+
+.bubble{
+  max-width:78%;
+  padding:14px 16px;
+  border-radius:20px;
+  font-size:14px;
+  line-height:1.6;
+  word-wrap:break-word;
+}
+
+.bot .bubble{
+  background:#141414;
+  border:1px solid #202020;
+  color:#fff;
+}
+
+.user .bubble{
+  background:#fff;
+  color:#000;
+}
+
+/* INPUT AREA */
+
+#input-area{
+  padding:16px;
+  display:flex;
+  gap:10px;
+  border-top:1px solid #1a1a1a;
+  background:#050505;
+}
+
+/* TEXTAREA */
+
+#chat-input{
+  flex:1;
+  resize:none;
+  border:none;
+  outline:none;
+  background:#111;
+  color:#fff;
+  border-radius:16px;
+  padding:14px;
+  font-size:14px;
+  max-height:120px;
+  overflow-y:auto;
+  border:1px solid #1f1f1f;
+  font-family:'Inter',sans-serif;
+}
+
+#chat-input::placeholder{
+  color:#666;
+}
+
+/* SEND BUTTON */
+
+#send-btn{
+  width:54px;
+  height:54px;
+  border:none;
+  border-radius:16px;
+  background:white;
+  color:black;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s ease;
+}
+
+#send-btn:hover{
+  transform:scale(1.05);
+}
+
+#send-btn:active{
+  transform:scale(0.95);
+}
+
+/* TYPING */
+
+.typing{
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.typing span{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#777;
+  animation:bounce 1.2s infinite;
+}
+
+.typing span:nth-child(2){
+  animation-delay:0.2s;
+}
+
+.typing span:nth-child(3){
+  animation-delay:0.4s;
+}
+
+/* ANIMATIONS */
+
+@keyframes bounce{
+
+  0%,80%,100%{
+    transform:translateY(0);
+    opacity:0.3;
+  }
+
+  40%{
+    transform:translateY(-5px);
+    opacity:1;
+  }
+
+}
+
+@keyframes fadeIn{
+
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="chat-box">
+
+  <!-- HEADER -->
+
+  <div id="chat-header">
+
+    <div class="logo">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='black'/%3E%3Ctext x='50%25' y='58%25' fill='white' font-family='Georgia,Times,serif' font-size='130' font-weight='400' text-anchor='middle' dominant-baseline='middle'%3EB%3C/text%3E%3C/svg%3E" alt="Logo Boosting">
+    </div>
+
+    <div class="header-text">
+      <h1>Boosting AI</h1>
+      <p>Asistente Virtual</p>
+    </div>
+
+  </div>
+
+  <!-- MESSAGES -->
+
+  <div id="chat-messages">
+
+    <div class="msg bot">
+      <div class="bubble">
+        Hola 👋 Bienvenido a <strong>Boosting</strong>.<br><br>
+        Estamos listos para ayudarte a crear una página web increíble 🚀
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INPUT -->
+
+  <div id="input-area">
+
+    <textarea
+      id="chat-input"
+      rows="1"
+      placeholder="Escribe un mensaje..."
+    ></textarea>
+
+    <button id="send-btn">
+      ↑
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+const API_URL = "http://192.168.0.41:3000/chat";
+
+let history = [];
+
+const messages = document.getElementById("chat-messages");
+const input = document.getElementById("chat-input");
+const sendBtn = document.getElementById("send-btn");
+
+/* AUTO RESIZE */
+
+input.addEventListener("input", () => {
+
+  input.style.height = "auto";
+  input.style.height = input.scrollHeight + "px";
+
+});
+
+/* ENTER SEND */
+
+input.addEventListener("keydown", e => {
+
+  if(e.key === "Enter" && !e.shiftKey){
+
+    e.preventDefault();
+    sendMessage();
+
+  }
+
+});
+
+sendBtn.addEventListener("click", sendMessage);
+
+/* SECURITY */
+
+function escapeHTML(str){
+
+  return str
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+/* ADD MESSAGE */
+
+function addMessage(text, role){
+
+  const div = document.createElement("div");
+
+  div.className = `msg ${role}`;
+
+  div.innerHTML = `
+    <div class="bubble">
+      ${escapeHTML(text).replace(/\n/g,"<br>")}
+    </div>
+  `;
+
+  messages.appendChild(div);
+
+  messages.scrollTop = messages.scrollHeight;
+
+}
+
+/* TYPING EFFECT */
+
+function addTyping(){
+
+  const div = document.createElement("div");
+
+  div.className = "msg bot";
+
+  div.innerHTML = `
+    <div class="bubble">
+      <div class="typing">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  `;
+
+  messages.appendChild(div);
+
+  messages.scrollTop = messages.scrollHeight;
+
+  return div;
+
+}
+
+/* SEND MESSAGE */
+
+async function sendMessage(){
+
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  addMessage(text, "user");
+
+  history.push({
+    role:"user",
+    content:text
+  });
+
+  input.value = "";
+  input.style.height = "auto";
+
+  const typing = addTyping();
+
+  try{
+
+    const response = await fetch(API_URL, {
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        messages:history
+      })
+
+    });
+
+    if(!response.ok){
+
+      throw new Error("Server Error");
+
+    }
+
+    const data = await response.json();
+
+    typing.remove();
+
+    addMessage(data.reply, "bot");
+
+    history.push({
+      role:"assistant",
+      content:data.reply
+    });
+
+  }catch(error){
+
+    typing.remove();
+
+    addMessage(
+      "⚠️ Error conectando con el servidor.",
+      "bot"
+    );
+
+    console.error(error);
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
+```
