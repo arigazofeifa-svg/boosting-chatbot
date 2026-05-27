@@ -1,60 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 
 const app = express();
+
 app.use(cors());
 app.use(express.static(__dirname));
 app.use(express.json());
-
-const transporter = nodemailer.createTransport({
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  family: 4,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
-async function enviarEmail(cita) {
-  const mensaje = `
-Nueva cita agendada en Boosting 🚀
-
-Cliente: ${cita.nombre}
-Email: ${cita.email}
-Teléfono: ${cita.telefono}
-Fecha y hora: ${cita.fecha}
-Mensaje: ${cita.mensaje}
-`;
-
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: "arigazofeifa@gmail.com, diegoandresardiles@gmail.com",
-    subject: `Nueva cita - ${cita.nombre}`,
-    text: mensaje
-  });
-}
-
-app.post("/agendar", async (req, res) => {
-  try {
-    const cita = req.body;
-
-    await enviarEmail(cita);
-
-    res.json({ ok: true });
-  } catch (error) {
-    console.log("Error enviando email:", error);
-    res.status(500).json({ ok: false });
-  }
-});
 
 app.post("/chat", async (req, res) => {
   try {
@@ -72,44 +24,50 @@ app.post("/chat", async (req, res) => {
             {
               role: "system",
               content: `
-Eres Boosting AI, el asistente virtual oficial de Boosting, una agencia moderna de diseño y desarrollo de páginas web profesionales.
+Eres Boosting AI, asistente oficial de Boosting.
 
-Tu trabajo es:
+IMPORTANTE:
+- Responde corto, moderno y directo.
+- No mandes textos largos.
+- Habla como una agencia moderna.
 
-1. Dar la bienvenida al cliente de manera profesional y amigable
-2. Explicar los servicios de Boosting:
-   - Diseño de páginas web
-   - Desarrollo web profesional
-   - Tiendas online
-   - Landing pages
-   - Branding digital
-   - Optimización y automatización
+Tu trabajo:
+1. Ayudar clientes interesados en páginas web.
+2. Hacer preguntas para conocer el proyecto.
+3. Pedir:
+- Nombre
+- Correo
+- Número
+- Nombre de la marca o página
+- Tipo de página
+- Colores
+- Estilo deseado
+- Si tienen logo o imágenes
 
-3. Responder preguntas sobre páginas web y servicios digitales
+4. Recomendar:
+- Hostinger para páginas normales
+- Shopify solo para ecommerce
 
-4. Cuando el cliente quiera agendar una llamada o reunión, pedir:
-   - Nombre completo
-   - Email
-   - Teléfono
-   - Fecha y hora preferida
-   - Breve descripción del proyecto
+5. Precios:
+- Desde $150-$200+
+- Depende del proyecto
 
-5. Los horarios disponibles son:
-   - Lunes a Viernes: 4pm a 10pm
-   - Sábados y Domingos: 12pm a 10pm
+6. Ofrecer mantenimiento SOLO al final o si preguntan.
 
-6. Cuando tengas TODOS los datos del cliente, responde EXACTAMENTE en este formato JSON y nada más:
+7. Solo dar estos números si el cliente lo necesita:
+- +506 89678064
+- +506 6099 2165
 
-CITA:{"nombre":"...","email":"...","telefono":"...","fecha":"...","mensaje":"..."}
+8. Cuando tengas TODOS los datos responde EXACTAMENTE así:
 
-7. Siempre responde en español.
-8. Sé elegante, moderna, profesional y cercana.
-9. Cuando pregunten por precios, explica que depende del proyecto y recomienda agendar una llamada con Boosting.
+CLIENTE:{"nombre":"...","correo":"...","telefono":"...","marca":"...","tipo":"...","colores":"...","estilo":"...","detalles":"..."}
+
+9. Siempre responde en español.
 `
             },
             ...req.body.messages
           ],
-          max_tokens: 500
+          max_tokens: 300
         })
       }
     );
@@ -118,22 +76,42 @@ CITA:{"nombre":"...","email":"...","telefono":"...","fecha":"...","mensaje":"...
 
     if (!data.choices) {
       return res.json({
-        reply: "Error: " + (data.error?.message || "Sin respuesta")
+        reply: "Ocurrió un error."
       });
     }
 
     const reply = data.choices[0].message.content;
 
-    if (reply.includes("CITA:")) {
-      const jsonStr = reply.split("CITA:")[1].trim();
+    if (reply.includes("CLIENTE:")) {
+      const jsonStr = reply.split("CLIENTE:")[1].trim();
 
-      const cita = JSON.parse(jsonStr);
+      const cliente = JSON.parse(jsonStr);
 
-      await enviarEmail(cita);
+      const mensaje = `
+🚀 Nuevo cliente Boosting
+
+👤 Nombre: ${cliente.nombre}
+📧 Correo: ${cliente.correo}
+📱 Teléfono: ${cliente.telefono}
+
+🌐 Marca: ${cliente.marca}
+🖥️ Tipo: ${cliente.tipo}
+
+🎨 Colores: ${cliente.colores}
+✨ Estilo: ${cliente.estilo}
+
+📝 Detalles:
+${cliente.detalles}
+`;
+
+      const whatsapp =
+        "https://wa.me/50689678064?text=" +
+        encodeURIComponent(mensaje);
 
       return res.json({
-        reply: `✅ ¡Perfecto ${cita.nombre}! Tu reunión con Boosting ha sido agendada para el ${cita.fecha}. Te enviaremos una confirmación a ${cita.email}. 🚀`,
-        cita
+        reply:
+          "✅ Perfecto. Ya tenemos la información de tu proyecto. Te contactaremos pronto 🚀",
+        whatsapp
       });
     }
 
@@ -145,5 +123,5 @@ CITA:{"nombre":"...","email":"...","telefono":"...","fecha":"...","mensaje":"...
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log("🚀 Servidor Boosting funcionando en puerto 3000");
+  console.log("🚀 Boosting AI funcionando");
 });
