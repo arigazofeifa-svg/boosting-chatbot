@@ -83,37 +83,11 @@ CLIENTE:{"nombre":"...","correo":"...","telefono":"...","marca":"...","tipo":"..
     const reply = data.choices[0].message.content;
 
     if (reply.includes("CLIENTE:")) {
-      const jsonStr = reply.split("CLIENTE:")[1].trim();
-
-      const cliente = JSON.parse(jsonStr);
-
-      const mensaje = `
-🚀 Nuevo cliente Boosting
-
-👤 Nombre: ${cliente.nombre}
-📧 Correo: ${cliente.correo}
-📱 Teléfono: ${cliente.telefono}
-
-🌐 Marca: ${cliente.marca}
-🖥️ Tipo: ${cliente.tipo}
-
-🎨 Colores: ${cliente.colores}
-✨ Estilo: ${cliente.estilo}
-
-📝 Detalles:
-${cliente.detalles}
-`;
-
-      const whatsapp =
-        "https://wa.me/50689678064?text=" +
-        encodeURIComponent(mensaje);
-
-      return res.json({
-        reply:
-          "✅ Perfecto. Ya tenemos la información de tu proyecto. Te contactaremos pronto 🚀",
-        whatsapp
-      });
-    }
+  return res.json({
+    reply:
+      "✅ Perfecto. Ya tenemos la información de tu proyecto. Te contactaremos pronto 🚀"
+  });
+}
 
     res.json({ reply });
   } catch (error) {
