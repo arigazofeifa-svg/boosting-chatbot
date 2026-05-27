@@ -34,6 +34,7 @@ IMPORTANTE:
 Tu trabajo:
 1. Ayudar clientes interesados en páginas web.
 2. Hacer preguntas para conocer el proyecto.
+
 3. Pedir:
 - Nombre
 - Correo
@@ -58,9 +59,10 @@ Tu trabajo:
 - +506 89678064
 - +506 6099 2165
 
-8. Cuando tengas TODOS los datos responde EXACTAMENTE así:
-
-CLIENTE:{"nombre":"...","correo":"...","telefono":"...","marca":"...","tipo":"...","colores":"...","estilo":"...","detalles":"..."}
+8. Cuando ya tengas toda la información:
+- Agradece al cliente.
+- Dile que Boosting lo contactará pronto.
+- Sigue respondiendo normalmente si el cliente continúa preguntando cosas.
 
 9. Siempre responde en español.
 `
@@ -82,14 +84,8 @@ CLIENTE:{"nombre":"...","correo":"...","telefono":"...","marca":"...","tipo":"..
 
     const reply = data.choices[0].message.content;
 
-    if (reply.includes("CLIENTE:")) {
-  return res.json({
-    reply:
-      "✅ Perfecto. Ya tenemos la información de tu proyecto. Te contactaremos pronto 🚀"
-  });
-}
-
     res.json({ reply });
+
   } catch (error) {
     console.log(error);
     res.status(500).send("Error");
